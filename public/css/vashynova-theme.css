@@ -271,6 +271,18 @@ body {
 	}
 }
 
+/* Contact info cards: a long, unbroken string like an email address has no
+   spaces to wrap at, so it was overflowing past the card's edge at the
+   template's 21px font-size instead of wrapping to a new line. */
+.aximo-contact-info-data p,
+.aximo-contact-info-data p a {
+	overflow-wrap: break-word;
+	word-break: break-word;
+}
+.aximo-contact-info-data p a[href^="mailto:"] {
+	font-size: 18px;
+}
+
 /* Selection color */
 ::selection {
 	background: #6c63ff;

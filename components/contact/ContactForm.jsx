@@ -21,6 +21,20 @@ function ContactForm() {
 		Boolean(value || getValues("email") || getValues("phone")) ||
 		"Please provide your email or phone number.";
 
+	const validatePhone = (value) => {
+		if (!value) return requireEmailOrPhone(value);
+		return /^[+]?[\d\s\-()]{7,20}$/.test(value) || "Enter a valid phone number (digits only).";
+	};
+
+	// Block letters and other non-phone characters as the user types, instead
+	// of only catching it on submit.
+	const sanitizePhoneInput = (e) => {
+		const cleaned = e.target.value.replace(/[^\d\s+\-()]/g, "");
+		if (cleaned !== e.target.value) {
+			e.target.value = cleaned;
+		}
+	};
+
 	const submitForm = (formData) => {
 		const { name, email, phone, company, message } = formData;
 
@@ -83,8 +97,10 @@ function ContactForm() {
 								<div className="aximo-main-field">
 									<Field label="Enter Phone Number" error={errors.phone}>
 										<input
-											{...register("phone", { validate: requireEmailOrPhone })}
+											{...register("phone", { validate: validatePhone })}
+											onInput={sanitizePhoneInput}
 											type="tel"
+											inputMode="tel"
 											name="phone"
 											id="phone"
 										/>

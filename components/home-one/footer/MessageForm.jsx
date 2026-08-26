@@ -13,6 +13,20 @@ function MessageForm() {
 	} = useForm();
 	const [submitted, setSubmitted] = useState(false);
 
+	const validatePhone = (value) => {
+		if (!value) return true;
+		return /^[+]?[\d\s\-()]{7,20}$/.test(value) || "Enter a valid phone number (digits only).";
+	};
+
+	// Block letters and other non-phone characters as the user types, instead
+	// of only catching it on submit.
+	const sanitizePhoneInput = (e) => {
+		const cleaned = e.target.value.replace(/[^\d\s+\-()]/g, "");
+		if (cleaned !== e.target.value) {
+			e.target.value = cleaned;
+		}
+	};
+
 	const submitForm = (formData) => {
 		const { name, email, phone, message } = formData;
 
@@ -58,7 +72,16 @@ function MessageForm() {
 				</Field>
 			</div>
 			<div className="aximo-form-field">
-				<input {...register("phone")} type="text" placeholder="Your phone number" />
+				<Field error={errors.phone}>
+					<input
+						{...register("phone", { validate: validatePhone })}
+						onInput={sanitizePhoneInput}
+						type="tel"
+						inputMode="tel"
+						id="footer-phone"
+						placeholder="Your phone number"
+					/>
+				</Field>
 			</div>
 			<div className="aximo-form-field">
 				<textarea
